@@ -51,5 +51,3 @@ Get user
 Response: 
 {"name":"Shrre","age":25}% 
 
-===========
-Update

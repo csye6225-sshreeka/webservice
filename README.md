@@ -22,7 +22,7 @@ Pre-Requisites: Need to have postman installed
 Create user
 
 >curl -X POST \
-  http://localhost:8083/v1/user/add \
+  http://localhost:8083/v1/user/ \
   -H 'Accept: */*' \
   -H 'Cache-Control: no-cache' \
   -H 'Connection: keep-alive' \
@@ -43,7 +43,7 @@ Response:
 Get user
 
 >curl -X GET \
-  http://localhost:8083/v1/user/Piyush@gmail.com\
+  http://localhost:8083/v1/user/self\
   -H 'Accept: */*' \
   -H 'Authorization: Basic UGl5dXNoQGdtYWlsLmNvbTpQaXl1c2gxMjMkJCQ=' \
   -H 'Cache-Control: no-cache' \

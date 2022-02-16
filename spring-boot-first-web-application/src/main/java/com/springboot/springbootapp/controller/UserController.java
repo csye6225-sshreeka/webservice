@@ -25,7 +25,6 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping(path = "v1/user")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -42,24 +41,23 @@ public class UserController {
         binder.setValidator(userValidator);
     }
 
-    @GetMapping(value = "/{username}")
-    public ResponseEntity getUser( @PathVariable("username") String username , HttpServletRequest request) {
+    @GetMapping(value = "v1/user/self")
+    public ResponseEntity getUser(HttpServletRequest request) {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String sd = authorizationHeader.replace("Basic ", "");
         byte[] decodedBytes = Base64.getDecoder().decode(sd);
         String decoded = new String(decodedBytes);
         String[] parts = decoded.split(":");
-
-        if (username.equals(parts[0])) {
+        if (userService.isEmailPresent(parts[0])){
             User user = userService.getUser(parts[0]);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
+    }
 
-        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
     }
 
 
-    @PutMapping(value="/update")
+    @PutMapping(value="v1/user/self")
     public ResponseEntity updateUser(@RequestBody User user, HttpServletRequest request) {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String sd = authorizationHeader.replace("Basic ", "");
@@ -84,8 +82,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updated_user);
         }
     }
-    @PostMapping(value="/add")
-    public ResponseEntity<RegistrationStatus> register(@Valid @RequestBody User user, BindingResult errors, HttpServletResponse response) throws Exception{
+    @PostMapping(value="v1/user/")
+    public ResponseEntity register(@Valid @RequestBody User user, BindingResult errors, HttpServletResponse response) throws Exception{
         RegistrationStatus registrationStatus;
 
         if(errors.hasErrors()) {
@@ -94,8 +92,15 @@ public class UserController {
         }else {
             registrationStatus = new RegistrationStatus();
             userService.register(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(registrationStatus);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
     }
 
-}
+    @GetMapping(value = "/healthz")
+    public ResponseEntity getHealthz() {
+
+            return ResponseEntity.status(HttpStatus.OK).body("200 OK");
+    }
+
+    }
+

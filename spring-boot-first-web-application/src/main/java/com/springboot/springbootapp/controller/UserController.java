@@ -85,7 +85,7 @@ public class UserController {
         }
     }
     @PostMapping(value="/add")
-    public ResponseEntity<RegistrationStatus> register(@Valid @RequestBody User user, BindingResult errors, HttpServletResponse response) throws Exception{
+    public ResponseEntity register(@Valid @RequestBody User user, BindingResult errors, HttpServletResponse response) throws Exception{
         RegistrationStatus registrationStatus;
 
         if(errors.hasErrors()) {
@@ -94,7 +94,7 @@ public class UserController {
         }else {
             registrationStatus = new RegistrationStatus();
             userService.register(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(registrationStatus);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
     }
 

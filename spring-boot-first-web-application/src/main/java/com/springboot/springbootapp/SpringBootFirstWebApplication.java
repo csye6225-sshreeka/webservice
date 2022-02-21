@@ -1,18 +1,13 @@
-package com.firstwebapp.springboot.web;
+package com.springboot.springbootapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Main {
-	
-//	@Bean
-//	public RestTemplate getRestTemplate() {
-//		return new RestTemplate();
-//	}
+public class SpringBootFirstWebApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Main.class, args);
+		SpringApplication.run(SpringBootFirstWebApplication.class, args);
 	}
 
 }

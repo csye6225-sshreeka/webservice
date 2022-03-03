@@ -33,7 +33,7 @@ source "amazon-ebs" "ami-image" {
   launch_block_device_mappings {
     device_name           = "/dev/xvda"
     volume_type           = "gp2"
-    volume_size           = "8"
+    volume_size           = "20"
     delete_on_termination = true
   }
   region       = "us-east-1"

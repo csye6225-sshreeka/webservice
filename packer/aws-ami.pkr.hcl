@@ -10,19 +10,18 @@ packer {
 variable "github_repo" {
   default = env("GITHUB_REPO_PATH")
 }
-variable "access_key" {
-  type =  string
-  default = "mypassword"
-  sensitive = true
+variable "aws_access_key" {
+  type= string
+  default = env("MY_ACCESS_KEY")
 }
-variable "secret_key" {
-  type =  string
-  default = "mypassword"
-  sensitive = true
+variable "aws_secret_key" {
+  type= string
+  default = env("MY_SECRET_KEY")
 }
 #packer builder is able to create Amazon AMIs backed by EBS volumes for use in EC2
 source "amazon-ebs" "ami-image" {
   ami_name      = "csye6225_ami_img_{{timestamp}}"
+  ami_users     = ["771822191110"]
   instance_type = "t2.micro"
   source_ami_filter {
     filters = {
@@ -40,8 +39,8 @@ source "amazon-ebs" "ami-image" {
     delete_on_termination = true
   }
   region       = "us-east-1"
-  access_key   = "${var.access_key}"
-  secret_key   = "${var.secret_key}"
+  access_key   = "${var.aws_access_key}"
+  secret_key   = "${var.aws_secret_key}"
   ssh_username = "ec2-user"
 }
 build {

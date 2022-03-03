@@ -27,6 +27,14 @@ jobs:
         run: |
              mvn -B package --file spring-boot-first-web-application/pom.xml
              mkdir target && cp spring-boot-first-web-application/target/*.jar target
+
+      # configure AWS keys
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.MY_ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.MY_SECRET_KEY}}
+          aws-region: us-east-1
       # validate templates
       - name: Validate Template
         uses: hashicorp/packer-github-actions@master

@@ -1,4 +1,3 @@
-#packer core first connects to plugins to fetch below required functionality
 packer {
   required_plugins {
     amazon = {
@@ -18,7 +17,6 @@ variable "aws_secret_key" {
   type= string
   default = env("MY_SECRET_KEY")
 }
-#packer builder is able to create Amazon AMIs backed by EBS volumes for use in EC2
 source "amazon-ebs" "ami-image" {
   ami_name      = "csye6225_ami_img_{{timestamp}}"
   ami_users     = ["771822191110"]

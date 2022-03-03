@@ -13,7 +13,6 @@ This web application is developed using spring boot and uses rest controller for
 Pre-Requisites: Need to have postman installed
 
 - Clone this repository:git@github.com:csye6225-sshreeka/webservice.git into the local system using SSH Key.
-- Run WebappApplication by going to spring-boot-first-web-application/src/main/java/com/firstwebapp/springboot/web/Main.java
 
 
 
@@ -22,12 +21,12 @@ Pre-Requisites: Need to have postman installed
 Create user
 
 >curl -X POST \
-  http://localhost:8083/v1/user/ \
+  http://ec2-35-170-60-205.compute-1.amazonaws.com/v1/user/ \
   -H 'Accept: */*' \
   -H 'Cache-Control: no-cache' \
   -H 'Connection: keep-alive' \
   -H 'Content-Type: application/json' \
-  -H 'Host: localhost:8080' \
+  -H 'Host: ec2-35-170-60-205.compute-1.amazonaws.com:8080' \
   -H 'accept-encoding: gzip, deflate' \
   -H 'cache-control: no-cache' \
   -d '{
@@ -43,7 +42,7 @@ Response:
 Get user
 
 >curl -X GET \
-  http://localhost:8083/v1/user/self\
+  http://ec2-35-170-60-205.compute-1.amazonaws.com:8083/v1/user/self\
   -H 'Accept: */*' \
   -H 'Authorization: Basic UGl5dXNoQGdtYWlsLmNvbTpQaXl1c2gxMjMkJCQ=' \
   -H 'Cache-Control: no-cache' \

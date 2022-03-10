@@ -63,26 +63,13 @@ build {
 		"sudo yum -y install https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm",
 		"echo 'Install epel'",
 		"sudo amazon-linux-extras install epel",
-		"echo 'Install community server'",
-		"sudo yum -y install mysql-community-server",
-		"sudo systemctl enable --now mysqld",
-		"systemctl status mysqld",
-		"echo 'here'",
-		"pass=$(sudo grep 'temporary password' /var/log/mysqld.log | awk {'print $13'})",
-		"mysql --connect-expired-password -u root -p$pass -e \"ALTER USER 'root'@'localhost' IDENTIFIED BY 'Shreekar_123';\"",
-		"mysql -u root -pShreekar_123 -e \"create database users;\"",
 		"pwd",
 		"mkdir webapp-target",
 		"cd webapp-target",
 		"sudo cp /tmp/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar spring-boot-first-web-application-0.0.1-SNAPSHOT.jar",
 		"pwd",
 		"ls",
-		"sleep 2m",
-		"sudo cp /tmp/app.service /etc/systemd/system/",
-		"sudo systemctl daemon-reload",
-		"sudo systemctl enable app.service",
-		"sudo systemctl start app.service",
-                "sudo systemctl status app.service",
+
 
     ]
   }

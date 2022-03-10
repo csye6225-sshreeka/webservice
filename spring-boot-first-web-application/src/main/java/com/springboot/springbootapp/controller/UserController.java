@@ -1,13 +1,18 @@
 package com.springboot.springbootapp.controller;
 
 
+import com.springboot.springbootapp.entity.Image;
 import com.springboot.springbootapp.entity.User;
 
+import com.springboot.springbootapp.repository.ImageRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.springboot.springbootapp.errors.RegistrationStatus;
 import com.springboot.springbootapp.repository.UserRepository;
+import com.springboot.springbootapp.service.S3BucketStorageService;
 import com.springboot.springbootapp.service.UserService;
 import com.springboot.springbootapp.validators.UserValidator;
 import java.util.Base64;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import com.timgroup.statsd.StatsDClient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +44,21 @@ public class UserController {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    S3BucketStorageService service;
 
+//    @Autowired
+//    private StatsDClient statsd;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    ImageRepository imageRepository;
+
+
+//    @Autowired
+//    MultiTenantManager multiTenantManager;
     @InitBinder
     private void initBinder(WebDataBinder binder) {
         binder.setValidator(userValidator);
@@ -102,5 +125,235 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("200 OK");
     }
 
+    //post image
+    @PostMapping(value = "/user/self/pic")
+    public ResponseEntity<Image> createImage(@RequestParam(value="profilePic", required=true) MultipartFile profilePic, HttpServletRequest request)
+            throws Exception {
+
+        System.out.println("In post /user/self/pic");
+        long startTime = System.currentTimeMillis();
+        //statsd.increment("Calls - Post user/self/pic - Post pic of User");
+        //check user credentials and get userid
+        String upd = request.getHeader("authorization");
+        if (upd == null || upd.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String sd = authorizationHeader.replace("Basic ", "");
+        byte[] decodedBytes = Base64.getDecoder().decode(sd);
+        String decoded = new String(decodedBytes);
+        String[] parts = decoded.split(":");
+        String emailid = parts[0];
+        String password = parts[1];
+
+        //System.println("username: " + userName);
+        //System.out.println("password: " + password);
+
+
+        System.out.println("Setting for post request");
+       // multiTenantManager.setCurrentTenant("all");
+
+       // statsd.increment("Calls - find User by username");
+       // Optional<User> tutorialData = repository.findByEmailId(emailid);// AndPassword(userName, encodedPass);
+       Optional<User>  tutorialData = Optional.ofNullable(repository.findByEmailId(emailid));
+
+        User user = repository.findByEmailId(emailid);
+
+        if (!user.getEmailId().equals(parts[0])){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        }
+        Image img=null;
+        if (tutorialData.isPresent()) {
+
+            if (bCryptPasswordEncoder.matches(password, tutorialData.get().getPassword())) {
+                //matches password complete-- add code here
+
+                //check if already image i.e. update request
+              //  statsd.increment("Calls - find image by user id");
+                Optional<Image> img1 = imageRepository.findByUserId(user.getId());
+                if(img1.isPresent())
+                {
+                    //delete
+                    long startTime2 = System.currentTimeMillis();
+                    String result = service.deleteFileFromS3Bucket(img1.get().getUrl(), user.getId());
+                 //   statsd.increment("Calls - delete image by id");
+                    imageRepository.delete(img1.get());
+
+                   // statsd.recordExecutionTime("DB Response Time - Image record delete", System.currentTimeMillis() - startTime2);
+
+                    //System.out.println("previous image deleted");
+                }
+
+
+
+                String bucket_name =service.uploadFile( user.getId()+"/"+profilePic.getOriginalFilename(), profilePic);
+
+                String url = bucket_name+"/"+ user.getId()+"/"+profilePic.getOriginalFilename();
+                img = new Image(user.getId(),profilePic.getOriginalFilename(), url);
+                long startTime2 = System.currentTimeMillis();
+                imageRepository.save(img);
+               // statsd.recordExecutionTime("DB Response Time - Image record saved", System.currentTimeMillis() - startTime2);
+
+               // statsd.recordExecutionTime("Api Response Time - Post user/self/pic - Post pic of user",System.currentTimeMillis() - startTime);
+
+                //return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+
+
+        return new ResponseEntity<>(img, HttpStatus.CREATED);
     }
+
+
+
+
+    //get image
+    @GetMapping(value = "/user/self/pic")
+    public ResponseEntity<Image> getImage(HttpServletRequest request)
+            throws Exception {
+        System.out.println("In get /user/self/pic");
+
+        long startTime = System.currentTimeMillis();
+       // statsd.increment("Calls - Get user/self/pic - Get pic of User");
+
+        //check user credentials and get userid
+        String upd = request.getHeader("authorization");
+        if (upd == null || upd.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String sd = authorizationHeader.replace("Basic ", "");
+        byte[] decodedBytes = Base64.getDecoder().decode(sd);
+        String decoded = new String(decodedBytes);
+        String[] parts = decoded.split(":");
+        String emailid = parts[0];
+        String password = parts[1];
+        // System.out.println("username: " + userName);
+        // System.out.println("password: " + password);
+
+
+        System.out.println("Setting for get request");
+        //multiTenantManager.setCurrentTenant("get");
+
+       // statsd.increment("Calls - find User by username");
+        Optional<User>  tutorialData = Optional.ofNullable(repository.findByEmailId(emailid));
+        Optional<Image> img=null;
+        if (tutorialData.isPresent()) {
+
+            if (bCryptPasswordEncoder.matches(password, tutorialData.get().getPassword())) {
+
+                //check if verified user
+                //matches password complete-- add code here
+
+                User user = tutorialData.get();
+
+                long startTime2 = System.currentTimeMillis();
+                //    statsd.increment("Calls - find image by userid");
+                img = imageRepository.findByUserId(user.getId());
+            //    statsd.recordExecutionTime("DB Response Time - Image record get", System.currentTimeMillis() - startTime2);
+                if (img.isPresent()) {
+                //    statsd.recordExecutionTime("Api Response Time - Get user/self/pic - Get pic of user",System.currentTimeMillis() - startTime);
+
+                    return new ResponseEntity<>(img.get(), HttpStatus.OK);
+                }
+                else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+                //return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
+
+
+    //delete image
+    @DeleteMapping(value = "/user/self/pic")
+    public ResponseEntity<String> deleteImage(HttpServletRequest request)
+            throws Exception {
+        System.out.println("In delete /user/self/pic");
+        long startTime = System.currentTimeMillis();
+      //  statsd.increment("Calls - Delete user/self/pic - Delete pic of User");
+        //check user credentials and get userid
+        String upd = request.getHeader("authorization");
+        if (upd == null || upd.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String sd = authorizationHeader.replace("Basic ", "");
+        byte[] decodedBytes = Base64.getDecoder().decode(sd);
+        String decoded = new String(decodedBytes);
+        String[] parts = decoded.split(":");
+        String emailid = parts[0];
+        String password = parts[1];
+
+        // System.out.println("username: " + userName);
+        // System.out.println("password: " + password);
+
+
+        System.out.println("Setting for delete request");
+    //    multiTenantManager.setCurrentTenant("all");
+
+        Optional<User> tutorialData = Optional.ofNullable(repository.findByEmailId(emailid));// AndPassword(userName, encodedPass);
+        Optional<Image> img=null;
+        if (tutorialData.isPresent()) {
+
+            if (bCryptPasswordEncoder.matches(password, tutorialData.get().getPassword())) {
+
+
+                //check if verified user
+
+
+
+                //matches password complete-- add code here
+
+
+
+                User user = tutorialData.get();
+
+                //statsd.increment("Calls - find image by userid");
+                img = imageRepository.findByUserId(user.getId());
+
+                if (img.isPresent()) {
+                    //so delete
+
+                    String result = service.deleteFileFromS3Bucket(img.get().getUrl(),user.getId());
+                    long startTime2 = System.currentTimeMillis();
+                    imageRepository.delete(img.get());
+                 //   statsd.recordExecutionTime("DB Response Time - Image record delete", System.currentTimeMillis() - startTime2);
+
+
+                   // statsd.recordExecutionTime("Api Response Time - Delete user/self/pic - Delete pic of user",System.currentTimeMillis() - startTime);
+                    return new ResponseEntity<>(result, HttpStatus.OK);
+                }
+                else {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+                //return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+    }
+
+
 

@@ -2,6 +2,7 @@ package com.springboot.springbootapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.data.jpa.repository.Query;
 
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -12,8 +13,9 @@ import javax.persistence.*;
 @Setter
 @Entity(name = "users")
 public class User {
+
 	@Id
-	@GeneratedValue
+	@GeneratedValue()
 	private int id;
 	private String fname;
 	private String lname;

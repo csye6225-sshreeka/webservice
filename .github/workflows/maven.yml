@@ -1,8 +1,5 @@
 name: github pr 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -16,6 +13,9 @@ jobs:
       # checks-out current repo so the job can access it
       - name: Checkout Repo
         uses: actions/checkout@v2
+      - name: Set sha_short
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       # setup java environment for execution
       - name: Setup Java Environment
         uses: actions/setup-java@v2

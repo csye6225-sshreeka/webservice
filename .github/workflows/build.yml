@@ -1,0 +1,68 @@
+name: s3 sync and code deploy 
+on:
+  push:
+    branches:
+      - main
+jobs:
+  # name of the job created
+  build:
+    # specifies the particular OS on which this job will run
+    runs-on: ubuntu-latest
+    # list of steps executed in this job
+    steps:
+      # checks-out current repo so the job can access it
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Set sha_short
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      # setup java environment for execution
+      - name: Setup Java Environment
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      # run unit test using maven commands
+      - name: Build with Maven
+        run: |
+             mvn -B package --file spring-boot-first-web-application/pom.xml
+             mkdir target && cp spring-boot-first-web-application/target/*.jar target
+
+
+
+      # configure AWS keys
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.GHACTIONS_ACCESS}}
+          aws-secret-access-key: ${{secrets.GHACTIONS_SECRET}}
+          aws-region: us-east-1
+
+
+      - name: Zip Artifact
+        run: |
+          mkdir codedeploy_artifact
+          zip -r webapp-${{ steps.vars.outputs.sha_short }}.zip \
+          ./target/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar ./codedeploy/*.sh appspec.yml
+          mv webapp-${{ steps.vars.outputs.sha_short }}.zip ./codedeploy_artifact
+
+      # Upload Artifacts to S3
+      - name: Upload Artifacts
+        run: |
+          aws s3 sync ./codedeploy_artifact s3://${{ secrets.S3_BUCKET_NAME }}
+    
+      # Deploy Artifact to EC2
+      - name: Deploy Webapp
+        run: |
+          output=$(aws deploy create-deployment \
+          --application-name "csye6225-webapp" \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name "csye6225-webapp-deployment" \
+          --description "deploy webapp" \
+          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=webapp-${{ steps.vars.outputs.sha_short }}.zip \
+          --region us-east-1 \
+          --output json)
+          echo $output
+          dId=$(echo $output | jq -r '.deploymentId')
+          aws deploy wait deployment-successful --deployment-id $dId
+

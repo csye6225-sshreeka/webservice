@@ -1,0 +1,22 @@
+version: 0.0
+os: linux
+files:             
+  - source: target/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar
+    destination: /home/ec2-user/webapp-target/
+hooks:
+  ApplicationStop:
+    - location: ./codedeploy/applicationStop.sh
+      timeout: 180
+      runas: ec2-user
+  BeforeInstall:
+    - location: ./codedeploy/beforeInstall.sh
+      timeout: 180
+      runas: ec2-user
+  AfterInstall:
+   - location: ./codedeploy/afterInstall.sh
+     timeout: 180
+     runas: ec2-user
+  ApplicationStart:
+    - location: ./codedeploy/applicationStart.sh
+      timeout: 180
+      runas: ec2-user

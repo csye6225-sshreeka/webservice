@@ -119,7 +119,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/healthz")
+    @GetMapping(value = "/health")
     public ResponseEntity getHealthz() {
 
             return ResponseEntity.status(HttpStatus.OK).body("200 OK");

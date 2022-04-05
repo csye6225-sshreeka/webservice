@@ -97,11 +97,7 @@ build {
 		"sudo cp /tmp/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar spring-boot-first-web-application-0.0.1-SNAPSHOT.jar",
 		"pwd",
 		"ls",
-    "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
-    -a fetch-config \
-    -m ec2 \
-    -c file:/home/ec2-user/cloudwatch-config.json \
-    -s"
+    "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/ec2-user/cloudwatch-config.json -s"
     ]
   }
 }

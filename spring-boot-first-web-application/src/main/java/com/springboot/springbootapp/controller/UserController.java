@@ -47,8 +47,8 @@ public class UserController {
     @Autowired
     S3BucketStorageService service;
 
-//    @Autowired
-//    private StatsDClient statsd;
+    @Autowired
+    private StatsDClient statsd;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -56,9 +56,6 @@ public class UserController {
     @Autowired
     ImageRepository imageRepository;
 
-
-//    @Autowired
-//    MultiTenantManager multiTenantManager;
     @InitBinder
     private void initBinder(WebDataBinder binder) {
         binder.setValidator(userValidator);
@@ -66,6 +63,8 @@ public class UserController {
 
     @GetMapping(value = "v1/user/self")
     public ResponseEntity getUser(HttpServletRequest request) {
+        statsd.increment("Calls - Get user");
+
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String sd = authorizationHeader.replace("Basic ", "");
         byte[] decodedBytes = Base64.getDecoder().decode(sd);
@@ -82,6 +81,8 @@ public class UserController {
 
     @PutMapping(value="v1/user/self")
     public ResponseEntity updateUser(@RequestBody User user, HttpServletRequest request) {
+        statsd.increment("Calls - Edit user");
+
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String sd = authorizationHeader.replace("Basic ", "");
         byte[] decodedBytes = Base64.getDecoder().decode(sd);
@@ -107,6 +108,8 @@ public class UserController {
     }
     @PostMapping(value="v1/user/")
     public ResponseEntity register(@Valid @RequestBody User user, BindingResult errors, HttpServletResponse response) throws Exception{
+        statsd.increment("Calls - Update user");
+
         RegistrationStatus registrationStatus;
 
         if(errors.hasErrors()) {
@@ -121,6 +124,7 @@ public class UserController {
 
     @GetMapping(value = "/healthz")
     public ResponseEntity getHealthz() {
+            statsd.increment("Calls - Get healthz");
 
             return ResponseEntity.status(HttpStatus.OK).body("200 OK");
     }
@@ -131,7 +135,8 @@ public class UserController {
             throws Exception {
 
         System.out.println("In post /user/self/pic");
-        long startTime = System.currentTimeMillis();
+        statsd.increment("Calls - Post user/self/pic - Post pic of User");
+
         //statsd.increment("Calls - Post user/self/pic - Post pic of User");
         //check user credentials and get userid
         String upd = request.getHeader("authorization");
@@ -221,8 +226,8 @@ public class UserController {
             throws Exception {
         System.out.println("In get /user/self/pic");
 
-        long startTime = System.currentTimeMillis();
-       // statsd.increment("Calls - Get user/self/pic - Get pic of User");
+
+        statsd.increment("Calls - Get user/self/pic - Get pic of User");
 
         //check user credentials and get userid
         String upd = request.getHeader("authorization");
@@ -287,7 +292,7 @@ public class UserController {
             throws Exception {
         System.out.println("In delete /user/self/pic");
         long startTime = System.currentTimeMillis();
-      //  statsd.increment("Calls - Delete user/self/pic - Delete pic of User");
+        statsd.increment("Calls - Delete user/self/pic - Delete pic of User");
         //check user credentials and get userid
         String upd = request.getHeader("authorization");
         if (upd == null || upd.isEmpty()) {

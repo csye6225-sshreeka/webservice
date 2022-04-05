@@ -122,7 +122,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/healthz")
+    @GetMapping(value = "/health")
     public ResponseEntity getHealthz() {
             statsd.increment("Calls - Get healthz");
 

@@ -56,6 +56,8 @@ public class UserController {
     @Autowired
     ImageRepository imageRepository;
 
+
+
     @InitBinder
     private void initBinder(WebDataBinder binder) {
         binder.setValidator(userValidator);
@@ -122,7 +124,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/health")
+    @GetMapping(value = "/healthz")
     public ResponseEntity getHealthz() {
             statsd.increment("Calls - Get healthz");
 

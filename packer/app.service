@@ -10,4 +10,5 @@ User=ec2-user
 ExecStart=/usr/bin/java -jar /home/ec2-user/webapp-target/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar
 SuccessExitStatus=143
 RemainAfterExit=yes
-
+StandardOutput=file:/home/ec2-user/csye6225.log
+StandardError=file:/home/ec2-user/csye6225.log

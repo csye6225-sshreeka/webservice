@@ -65,6 +65,12 @@ build {
       source      = "${var.github_repo}/target/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar"
   }
 
+  provisioner "file" {
+      destination = "/home/ec2-user/cloudwatch-config.json"
+      source      = "${var.github_repo}/cloudwatch_config.json"
+  }
+
+
   provisioner "shell" {
     inline = [
       "sleep 30",
@@ -82,12 +88,16 @@ build {
     "sudo ./install auto",
     "sudo service codedeploy-agent start",
     "sudo service codedeploy-agent status",
+    "sudo yum install amazon-cloudwatch-agent -y",
+    "sudo systemctl enable amazon-cloudwatch-agent",
+    "sudo systemctl start amazon-cloudwatch-agent",
 		"pwd",
 		"mkdir webapp-target",
 		"cd webapp-target",
 		"sudo cp /tmp/spring-boot-first-web-application-0.0.1-SNAPSHOT.jar spring-boot-first-web-application-0.0.1-SNAPSHOT.jar",
 		"pwd",
 		"ls",
+    "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/ec2-user/cloudwatch-config.json -s"
     ]
   }
 }

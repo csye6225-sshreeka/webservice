@@ -108,7 +108,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updated_user);
         }
     }
-    @PostMapping(value="v1/user/")
+    @PostMapping(value="v2/user/")
     public ResponseEntity register(@Valid @RequestBody User user, BindingResult errors, HttpServletResponse response) throws Exception{
         statsd.increment("Calls - Update user");
 

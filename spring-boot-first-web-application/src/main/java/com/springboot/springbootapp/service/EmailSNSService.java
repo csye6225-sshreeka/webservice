@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.regions.Region;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -148,10 +149,12 @@ public class EmailSNSService {
 //            Map<String,Object> user_token = new HashMap<String, Object>();
 //            user_token.put("emailID", recipientEmail);
 //            user_token.put("expiration_time", (int_random));
+            long now = Instant.now().getEpochSecond(); // unix time
+            long ttl = 300; // 24 hours in sec
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
                     .with("Token",int_random)
-                    .with("TimeToLive",int_random);
+                    .with("TimeToLive",ttl + now);
             PutItemOutcome outcome = table.putItem(item);
 
         } catch (SnsException e) {

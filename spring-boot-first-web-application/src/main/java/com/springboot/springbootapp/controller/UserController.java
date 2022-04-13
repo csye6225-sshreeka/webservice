@@ -231,14 +231,14 @@ public class UserController {
     }
 
 
-    @PostMapping("/verifyUserEmail")
+    @PostMapping("v1/verifyUserEmail")
     public ResponseEntity<String> verifedUserUpdatePost(@RequestParam("email") String email,
                                                         @RequestParam("token") String token) {
         String result ="not verfied post";
         try {
             //System.out.println("in post");
             //check if token is still valid
-
+            
             System.out.println("In post");
             result ="verified success post";
             updateFields( email,  token);

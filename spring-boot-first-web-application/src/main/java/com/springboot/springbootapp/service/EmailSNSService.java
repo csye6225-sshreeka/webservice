@@ -150,8 +150,8 @@ public class EmailSNSService {
 //            user_token.put("expiration_time", (int_random));
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
-                    .with("token",int_random)
-                    .with("TimeToLive", int_random);
+                    .with("Token",int_random)
+                    .with("TimeToLive",int_random);
 
             PutItemOutcome outcome = table.putItem(item);
 

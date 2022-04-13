@@ -155,7 +155,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("200 OK");
     }
 
-    @GetMapping("/verifyUserEmail")
+    @GetMapping("v1/verifyUserEmail")
     public ResponseEntity<String> verifedUserUpdate(@RequestParam("email") String email,
                                                     @RequestParam("token") String token) {
         String result ="not verfied get";

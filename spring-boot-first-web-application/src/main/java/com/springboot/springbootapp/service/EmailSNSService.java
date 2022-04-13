@@ -149,6 +149,8 @@ public class EmailSNSService {
             user_token.put("emailID", recipientEmail);
             user_token.put("token", String.valueOf(int_random));
             Item item = new Item()
+                    .withPrimaryKey("emailID", recipientEmail)
+
                     .withMap("TokenTable",user_token);
             PutItemOutcome outcome = table.putItem(item);
 

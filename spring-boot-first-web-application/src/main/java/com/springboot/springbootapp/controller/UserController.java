@@ -70,7 +70,7 @@ public class UserController {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-    
+
 
     @Autowired
     ImageRepository imageRepository;

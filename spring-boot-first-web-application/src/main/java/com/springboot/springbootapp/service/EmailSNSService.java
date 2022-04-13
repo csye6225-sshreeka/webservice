@@ -152,8 +152,6 @@ public class EmailSNSService {
                     .withPrimaryKey("emailID", recipientEmail)
                     .with("Token",int_random)
                     .with("TimeToLive",int_random);
-
-            
             PutItemOutcome outcome = table.putItem(item);
 
         } catch (SnsException e) {

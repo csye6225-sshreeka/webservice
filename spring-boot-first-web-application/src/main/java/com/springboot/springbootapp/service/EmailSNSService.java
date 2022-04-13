@@ -83,7 +83,8 @@ public class EmailSNSService {
         	Random rand = new Random(); //instance of random class
             int upperbound = 2500;
               //generate random values from 0-2499
-            int int_random = rand.nextInt(upperbound); 
+            int int_random = rand.nextInt(upperbound);
+
             String message1 = requestType + "|" + recipientEmail + "|" +
                     "https://demo.sshreeka.me/v1/verifyUserEmail?email=" + recipientEmail + "&token="+ int_random
                     + "|" + "messagetype-String" + "|" + int_random;

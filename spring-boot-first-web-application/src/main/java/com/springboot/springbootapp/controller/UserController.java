@@ -142,6 +142,7 @@ public class UserController {
             registrationStatus = new RegistrationStatus();
             userService.register(user);
             //create entry in dynamodb to trigger lambda by sns
+            System.out.println("in sns");
             snsService.postToTopic("POST", user.getEmailId());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -160,14 +161,14 @@ public class UserController {
                                                     @RequestParam("token") String token) {
         String result ="not verfied get";
         try {
-            //System.out.println("in post");
+            System.out.println("in post");
             //check if token is still valid in EmailID_Data
 
             // confirm dynamoDB table exists
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             dynamoDB = new DynamoDB(client);
             System.out.println("Get /verifyUserEmail");
-            Table userEmailsTable = (Table) dynamoDB.getTable("EmailID_Data");
+            Table userEmailsTable = (Table) dynamoDB.getTable("UsernameTokenTable");
             if(userEmailsTable == null) {
                 System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
                 return null;

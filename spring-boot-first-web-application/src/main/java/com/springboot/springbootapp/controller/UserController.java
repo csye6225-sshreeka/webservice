@@ -70,10 +70,7 @@ public class UserController {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private DynamoDbEnhancedClient dde;
-
+    
 
     @Autowired
     ImageRepository imageRepository;

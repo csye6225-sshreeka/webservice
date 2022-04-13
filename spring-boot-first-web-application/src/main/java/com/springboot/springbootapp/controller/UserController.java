@@ -174,7 +174,7 @@ public class UserController {
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             dynamoDB = new DynamoDB(client);
             System.out.println("Get /verifyUserEmail");
-            Table userEmailsTable = (Table) dynamoDB.getTable("TokenTable");
+            Table userEmailsTable = (Table) dynamoDB.getTable("UsernameTokenTable");
 
             if(userEmailsTable == null) {
                 System.out.println("Table 'Emails_DATA' is not in dynamoDB.");

@@ -145,9 +145,9 @@ public class EmailSNSService {
             Table table = dynamoDb.getTable("TokenTable");
 //            PutItemRequest request = new PutItemRequest().withTableName("TokenTable").withReturnConsumedCapacity("TOTAL");
 //            PutItemResult _response = client.putItem(request);
-            Map<String,String> user_token = new HashMap<String, String>();
+            Map<String,Object> user_token = new HashMap<String, Object>();
             user_token.put("emailID", recipientEmail);
-            user_token.put("expiration_time", String.valueOf(int_random));
+            user_token.put("expiration_time", (int_random));
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
 

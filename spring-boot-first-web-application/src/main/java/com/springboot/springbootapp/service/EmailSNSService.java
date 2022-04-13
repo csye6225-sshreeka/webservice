@@ -147,7 +147,7 @@ public class EmailSNSService {
 //            PutItemResult _response = client.putItem(request);
             Map<String,String> user_token = new HashMap<String, String>();
             user_token.put("emailID", recipientEmail);
-            user_token.put("token", String.valueOf(int_random));
+            user_token.put("expiration_time", String.valueOf(int_random));
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
 

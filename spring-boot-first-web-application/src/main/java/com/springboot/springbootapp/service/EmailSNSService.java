@@ -86,7 +86,7 @@ public class EmailSNSService {
             int int_random = rand.nextInt(upperbound);
 
             String message1 = requestType + "|" + recipientEmail + "|" +
-                    "https://demo.sshreeka.me/v1/verifyUserEmail?email=" + recipientEmail + "&token="+ int_random
+                    "http://demo.sshreeka.me/v1/verifyUserEmail?email=" + recipientEmail + "&token="+ int_random
                     + "|" + "messagetype-String" + "|" + int_random;
             logger.info("stinrg is");
             logger.info(message1);

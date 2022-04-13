@@ -238,7 +238,7 @@ public class UserController {
         try {
             //System.out.println("in post");
             //check if token is still valid
-            
+
             System.out.println("In post");
             result ="verified success post";
             updateFields( email,  token);

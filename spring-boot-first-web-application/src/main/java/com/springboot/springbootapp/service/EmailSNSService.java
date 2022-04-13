@@ -79,7 +79,7 @@ public class EmailSNSService {
 
     public void postToTopic(String requestType, String recipientEmail){
         try {
-        	System.out.println("in sns postToTopic");	
+        	System.out.println("in sns postToTopic");
         	Random rand = new Random(); //instance of random class
             int upperbound = 2500;
               //generate random values from 0-2499
@@ -88,6 +88,8 @@ public class EmailSNSService {
             String message1 = requestType + "|" + recipientEmail + "|" +
                     "https://demo.sshreeka.me/v1/verifyUserEmail?email=" + recipientEmail + "&token="+ int_random
                     + "|" + "messagetype-String" + "|" + int_random;
+            logger.info("stinrg is");
+            logger.info(message1);
             System.out.println("message generated, now publishing");	
             PublishRequest publishReq = PublishRequest.builder()
             		.message(message1)

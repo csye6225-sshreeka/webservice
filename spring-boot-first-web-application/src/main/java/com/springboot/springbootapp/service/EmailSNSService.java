@@ -85,7 +85,7 @@ public class EmailSNSService {
               //generate random values from 0-2499
             int int_random = rand.nextInt(upperbound); 
             String message1 = requestType + "|" + recipientEmail + "|" +
-                    "https://prod.aditijain2025.me/v1/verifyUserEmail?email=" + recipientEmail + "&token="+ int_random
+                    "https://demo.sshreeka.me/v1/verifyUserEmail?email=" + recipientEmail + "&token="+ int_random
                     + "|" + "messagetype-String" + "|" + int_random;
             System.out.println("message generated, now publishing");	
             PublishRequest publishReq = PublishRequest.builder()

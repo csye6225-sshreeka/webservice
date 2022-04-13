@@ -10,6 +10,8 @@ import java.time.Instant;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
+import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.springboot.springbootapp.entity.Image;
 import com.springboot.springbootapp.entity.User;
 
@@ -24,6 +26,8 @@ import com.springboot.springbootapp.validators.UserValidator;
 
 import java.time.OffsetDateTime;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -39,6 +43,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.timgroup.statsd.StatsDClient;
 
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,8 +71,8 @@ public class UserController {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-//    @Autowired
-//    private DynamoDBEnchanced dde;
+    @Autowired
+    private DynamoDbEnhancedClient dde;
 
 
     @Autowired
@@ -247,14 +252,6 @@ public class UserController {
             System.out.println("In post");
             result ="verified success post";
             updateFields( email,  token);
-            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-            dynamoDB = new DynamoDB(client);
-            System.out.println("Get /verifyUserEmail");
-            Table userEmailsTable = (Table) dynamoDB.getTable("TokenTable");
-            Item item = new Item()
-                    .withPrimaryKey("email", token);
-
-            userEmailsTable.putItem(item);
 
         }
         catch(Exception e)

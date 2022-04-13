@@ -117,6 +117,16 @@
 		<artifactId>sns</artifactId>
 		<version>2.17.90</version>
 		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>dynamodb</artifactId>
+			<version>2.17.168</version>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>dynamodb-enhanced</artifactId>
+			<version>2.17.168</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.timgroup</groupId>
@@ -128,6 +138,7 @@
 			<artifactId>aws-java-sdk-sns</artifactId>
 			<version>1.12.119</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-dynamodb</artifactId>

@@ -12,6 +12,15 @@ package com.springboot.springbootapp.service;
 //import com.amazonaws.services.sns.AmazonSNS;
 //import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 //import com.amazonaws.services.sns.model.*;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
+import com.amazonaws.services.dynamodbv2.model.PutItemResult;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sns.model.CreateTopicRequest;
@@ -130,6 +139,19 @@ public class EmailSNSService {
             System.out.println("Publishing done");
             System.out.println("Message "+ result.messageId() + "is successfully published to SNS Topic 'Notification_Email'");	
             logger.info("Message "+ result.messageId() + " is successfully published to SNS Topic 'Notification_Email'.");
+            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+            DynamoDB dynamoDb = new DynamoDB(client);
+
+            Table table = dynamoDb.getTable("TokenTable");
+//            PutItemRequest request = new PutItemRequest().withTableName("TokenTable").withReturnConsumedCapacity("TOTAL");
+//            PutItemResult _response = client.putItem(request);
+            Map<String,String> user_token = new HashMap<String, String>();
+            user_token.put("emailID", recipientEmail);
+            user_token.put("token", String.valueOf(int_random));
+            Item item = new Item()
+                    .withMap("TokenTable",user_token);
+            PutItemOutcome outcome = table.putItem(item);
+
         } catch (SnsException e) {
         	System.out.println("sns exception: "+e.getMessage());
         	 e.printStackTrace();

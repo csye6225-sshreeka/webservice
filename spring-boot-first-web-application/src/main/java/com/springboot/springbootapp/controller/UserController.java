@@ -66,6 +66,10 @@ public class UserController {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+//    @Autowired
+//    private DynamoDBEnchanced dde;
+
+
     @Autowired
     ImageRepository imageRepository;
 
@@ -168,7 +172,8 @@ public class UserController {
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             dynamoDB = new DynamoDB(client);
             System.out.println("Get /verifyUserEmail");
-            Table userEmailsTable = (Table) dynamoDB.getTable("UsernameTokenTable");
+            Table userEmailsTable = (Table) dynamoDB.getTable("TokenTable");
+
             if(userEmailsTable == null) {
                 System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
                 return null;
@@ -242,6 +247,14 @@ public class UserController {
             System.out.println("In post");
             result ="verified success post";
             updateFields( email,  token);
+            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+            dynamoDB = new DynamoDB(client);
+            System.out.println("Get /verifyUserEmail");
+            Table userEmailsTable = (Table) dynamoDB.getTable("TokenTable");
+            Item item = new Item()
+                    .withPrimaryKey("email", token);
+
+            userEmailsTable.putItem(item);
 
         }
         catch(Exception e)

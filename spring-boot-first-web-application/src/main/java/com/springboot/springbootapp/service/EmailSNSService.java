@@ -142,8 +142,7 @@ public class EmailSNSService {
             logger.info("Message "+ result.messageId() + " is successfully published to SNS Topic 'Notification_Email'.");
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             DynamoDB dynamoDb = new DynamoDB(client);
-
-            Table table = dynamoDb.getTable("UsernameTokenTable");
+            Table table = dynamoDb.getTable("ass");
 //            PutItemRequest request = new PutItemRequest().withTableName("TokenTable").withReturnConsumedCapacity("TOTAL");
 //            PutItemResult _response = client.putItem(request);
 //            Map<String,Object> user_token = new HashMap<String, Object>();

@@ -142,16 +142,16 @@ public class EmailSNSService {
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             DynamoDB dynamoDb = new DynamoDB(client);
 
-            Table table = dynamoDb.getTable("Account");
+            Table table = dynamoDb.getTable("TokenTable");
 //            PutItemRequest request = new PutItemRequest().withTableName("TokenTable").withReturnConsumedCapacity("TOTAL");
 //            PutItemResult _response = client.putItem(request);
 //            Map<String,Object> user_token = new HashMap<String, Object>();
 //            user_token.put("emailID", recipientEmail);
 //            user_token.put("expiration_time", (int_random));
             Item item = new Item()
-                    .withPrimaryKey("username", recipientEmail)
+                    .withPrimaryKey("emailID", recipientEmail)
                     .with("token",int_random)
-                    .with("ttl", int_random);
+                    .with("TimeToLive", int_random);
 
             PutItemOutcome outcome = table.putItem(item);
 

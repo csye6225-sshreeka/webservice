@@ -142,7 +142,7 @@ public class EmailSNSService {
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             DynamoDB dynamoDb = new DynamoDB(client);
 
-            Table table = dynamoDb.getTable("TokenTable");
+            Table table = dynamoDb.getTable("Account");
 //            PutItemRequest request = new PutItemRequest().withTableName("TokenTable").withReturnConsumedCapacity("TOTAL");
 //            PutItemResult _response = client.putItem(request);
 //            Map<String,Object> user_token = new HashMap<String, Object>();

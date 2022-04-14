@@ -185,24 +185,28 @@ public class UserController {
                 System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
                 return null;
             }
-
+            logger.info("in Get");
             System.out.println("EmailD_Data exits table");
             System.out.println("EmailD in input is:"+email);
+            logger.info(email);
+
             System.out.println("Index of spcae: in meial is: "+email.indexOf(" ",0));
             if(email.indexOf(" ", 0)!=-1) {
                 email=email.replace(" ", "+");
             }
             System.out.println("EmailD after replacement is:"+email);
             //check if item exits
-            Item item = userEmailsTable.getItem("id",email);
-            System.out.println("item= "+item);
+            Item item = userEmailsTable.getItem("emailID",email);
+
+            logger.info("item= "+item);
             if (item == null ) {
                 //table.putItem(new
 
                 result="token expired item not present";
+
             }else {
                 //if token expired
-                BigDecimal toktime=(BigDecimal)item.get("TimeToExist");
+                BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
 
 
                 //calcuate now time
@@ -224,6 +228,7 @@ public class UserController {
                 //esle update
                 else {
                     System.out.println("In get");
+                    logger.info("in get");
                     result ="verified success get";
                     //get user and update feilds
 

@@ -38,10 +38,7 @@ import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.regions.Region;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.util.Random;
+import java.util.*;
 
 
 @Service
@@ -82,7 +79,7 @@ public class EmailSNSService {
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
                     .with("Token",randomInt)
-                    .with("TimeToLive",ttl + now);
+                    .with("TimeToLive",add5Min());
             PutItemOutcome outcome = table.putItem(item);
         } catch (SnsException e) {
             System.out.println("sns exception: " + e.getMessage());
@@ -90,4 +87,14 @@ public class EmailSNSService {
             logger.error("SNS Exception Warning - " + e.getMessage());
         }
     }
+    public static String add5Min() {
+        Date date1 = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date1);
+        c.add(Calendar.MINUTE, 5); //adds five minute to the calendar's date
+        //System.out.println(date1.getTime()); //current time
+        return c.getTime().getTime() + ""; //current time + 5 minutes
+    }
+
 }
+

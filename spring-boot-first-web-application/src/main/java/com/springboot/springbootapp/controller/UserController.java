@@ -186,11 +186,15 @@ public class UserController {
 
             Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
             GetItemSpec spec = new GetItemSpec()
-                    .withPrimaryKey("emailID", email,"Token",token)
+                    .withPrimaryKey("emailID", email)
 
                   ;
+            Item item1 = userEmailsTable.getItem(spec);
+            logger.info("first");
+            logger.info(item1.get("emailID").toString());
 
-            Item item = userEmailsTable.getItem("emailID",email,"Token",token);
+            Item item = userEmailsTable.getItem("emailID",email);
+            logger.info(item.get("emailID").toString());
 
             logger.info("here is issisnipwjdijw");
           //  Item item = userEmailsTable.getItem(spec);

@@ -285,8 +285,8 @@ public class UserController {
 
           //  User user = tutorialData.get();
             user.setVerified(true);
-//            user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
-//            user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
+            user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
+            user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
             repository.save(user);
             System.out.println("user fields save success");
             logger.info("user fields save success");

@@ -78,8 +78,8 @@ public class EmailSNSService {
 
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
-                    .with("Token",randomInt)
-                    .with("TimeToLive",add5Min());
+                    .with("TimeToLive",now+ttl)
+                    .with("Token",randomInt);
            // client.updateTimeToLive(add5Min());
             PutItemOutcome outcome = table.putItem(item);
         } catch (SnsException e) {

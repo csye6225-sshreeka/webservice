@@ -105,6 +105,10 @@ public class UserController {
         String[] parts = decoded.split(":");
         if (userService.isEmailPresent(parts[0])){
             User user = userService.getUser(parts[0]);
+            if(!user.isVerified()) {
+                System.out.println("User is not yet verified");
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
     }
 
@@ -266,7 +270,6 @@ public class UserController {
 
           //  User user = tutorialData.get();
         user.setVerified(true);
-        logger.info("j"+user.isVerified());
         user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
         user.setAccUpdateTimestamp(Timestamp.from(Instant.now()));
         repository.save(user);

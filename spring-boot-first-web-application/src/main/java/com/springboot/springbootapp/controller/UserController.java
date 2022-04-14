@@ -211,7 +211,7 @@ public class UserController {
                 return null;
             }
 
-//            updateFields( email,  token);
+            updateFields( email,  token);
             result ="verified success get";
 
 

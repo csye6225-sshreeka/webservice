@@ -72,7 +72,8 @@ public class EmailSNSService {
             PublishResponse result = snsClient.publish(request);
             System.out.println("Publishing done");
             System.out.println("Message " + result.messageId() + "is successfully published to SNS Topic 'Notification_Email'");
-            //logger.info("Message " + result.messageId() + " is successfully published to SNS Topic 'Notification_Email'.");
+            logger.info("Message " + result.messageId() + " is successfully published to SNS Topic 'Notification_Email'.");
+            logger.info(snsMessage);
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             DynamoDB dynamoDb = new DynamoDB(client);
             Table table = dynamoDb.getTable("UsernameTokenTable");

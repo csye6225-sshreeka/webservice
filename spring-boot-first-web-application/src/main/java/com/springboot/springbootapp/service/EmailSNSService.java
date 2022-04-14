@@ -55,9 +55,7 @@ public class EmailSNSService {
             System.out.println("in sns postToTopic");
             Random rand = new Random();
             int randomInt = rand.nextInt(10000);
-            String snsMessage = requestType + "|" + recipientEmail + "|" +
-                    "https://demo.sshreeka.me/v1/verifyUserEmail?email=" + recipientEmail + "&token=" + randomInt
-                    + "|" + "messagetype-String" + "|" + randomInt;
+            String snsMessage = requestType + "|" + recipientEmail + "|"+ randomInt;
             System.out.println("message generated, now publishing");
             PublishRequest request = PublishRequest.builder()
                     .message(snsMessage)

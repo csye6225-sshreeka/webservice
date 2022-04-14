@@ -10,6 +10,7 @@ import java.time.Instant;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.springboot.springbootapp.entity.Image;
@@ -196,7 +197,12 @@ public class UserController {
             logger.info("EmailD after replacement is:"+email);
             //check if item exits
             logger.info("here..");
-            Item item = userEmailsTable.getItem("emailID",email);
+
+            GetItemSpec spec = new GetItemSpec()
+                    .withPrimaryKey("emailID", email);
+            Item item = userEmailsTable.getItem(spec);
+            logger.info(item.toJSONPretty());
+            //Item item = userEmailsTable.getItem("emailID",email);
 
             logger.info("here......");
 

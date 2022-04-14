@@ -179,29 +179,30 @@ public class UserController {
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             dynamoDB = new DynamoDB(client);
             System.out.println("Get /verifyUserEmail");
-            Table userEmailsTable = (Table) dynamoDB.getTable("UsernameTokenTable");
+            Table userEmailsTable = (Table) dynamoDB.getTable("TokenTable");
 
             if(userEmailsTable == null) {
                 System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
                 return null;
             }
             logger.info("in Get");
-            System.out.println("EmailD_Data exits table");
-            System.out.println("EmailD in input is:"+email);
+            logger.info("EmailD_Data exits table");
+            logger.info("EmailD in input is:"+email);
             logger.info(email);
 
-            System.out.println("Index of spcae: in meial is: "+email.indexOf(" ",0));
+            logger.info("Index of spcae: in meial is: "+email.indexOf(" ",0));
 //            if(email.indexOf(" ", 0)!=-1) {
 //                email=email.replace(" ", "+");
 //            }
             logger.info("EmailD after replacement is:"+email);
             //check if item exits
+            logger.info("here..");
             Item item = userEmailsTable.getItem("emailID",email);
-            logger.info("here");
+
+            logger.info("here......");
 
             logger.info("item= "+item);
             if (item == null ) {
-                //table.putItem(new
 
                 result="token expired item not present";
 
@@ -291,7 +292,7 @@ public class UserController {
         user.setVerified(true);
         logger.info("j"+user.isVerified());
         user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
-        //user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
+        user.setAccUpdateTimestamp(Timestamp.from(Instant.now()));
         repository.save(user);
         logger.info("user fields save success");
 

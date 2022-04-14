@@ -194,13 +194,14 @@ public class UserController {
             logger.info(item1.get("emailID").toString());
 
             Item item = userEmailsTable.getItem("emailID",email);
-            logger.info(item.get("emailID").toString());
+            logger.info(item1.get("emailID").toString());
 
             logger.info("here is issisnipwjdijw");
           //  Item item = userEmailsTable.getItem(spec);
             String mail = item.get("emailID").toString();
-            logger.info(mail);
-            logger.info(item.get("Token").toString());
+            logger.info("email is"+mail);
+
+//            lo:q!gger.info(item.get("Token").toString());
             logger.info(item.get("TimeToLive").toString());
 
         logger.info("here is ff");

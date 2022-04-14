@@ -80,7 +80,7 @@ public class UserController {
     @Autowired
     ImageRepository imageRepository;
 
-    private DynamoDB dynamoDB;
+//    private DynamoDB dynamoDB;
 
     @Autowired
     EmailSNSService snsService;
@@ -178,8 +178,7 @@ public class UserController {
             // confirm dynamoDB table exists
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             DynamoDB dynamoDb = new DynamoDB(client);
-
-            Table userEmailsTable = dynamoDB.getTable("TokenTable");
+            Table userEmailsTable = dynamoDb.getTable("UsernameTokenTable");
 
             if(userEmailsTable == null) {
                 System.out.println("Table 'Emails_DATA' is not in dynamoDB.");

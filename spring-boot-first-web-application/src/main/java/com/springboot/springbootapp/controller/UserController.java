@@ -180,13 +180,13 @@ public class UserController {
 
             // confirm dynamoDB table exists
 
-            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-            dynamoDB = new DynamoDB(client);
+//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+//            dynamoDB = new DynamoDB(client);
 
-            Table userEmailsTable = dynamoDB.getTable("TokenTable");
-            Item item = userEmailsTable.getItem("emailID",email);
-            logger.info("gettgin item");
-            logger.info("item= "+item);
+//            Table userEmailsTable = dynamoDB.getTable("TokenTable");
+//            Item item = userEmailsTable.getItem("emailID",email);
+//            logger.info("gettgin item");
+//            logger.info("item= "+item);
 
 //            if(userEmailsTable == null) {
 //                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
@@ -229,6 +229,8 @@ public class UserController {
             logger.info("EmailD after replacement is:"+email);
             //check if item exits
             logger.info("here..");
+            updateFields( email,  token);
+
 //            dynamodbClient = AmazonDynamoDBClientBuilder.standard()
 //                    .withCredentials(new InstanceProfileCredentialsProvider(false))
 //                    .withRegion("us-east-1")

@@ -82,7 +82,7 @@ public class UserController {
     @Autowired
     ImageRepository imageRepository;
 
-//    private DynamoDB dynamoDB;
+    private DynamoDB dynamoDB;
 
     @Autowired
     EmailSNSService snsService;
@@ -180,36 +180,39 @@ public class UserController {
 
             // confirm dynamoDB table exists
 
+            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+            dynamoDB = new DynamoDB(client);
 
-//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-//            DynamoDB dynamoDb = new DynamoDB(client);
-//            Table userEmailsTable = dynamoDb.getTable("UsernameTokenTable");
-//
+            Table userEmailsTable = dynamoDB.getTable("TokenTable");
+            Item item = userEmailsTable.getItem("emailID",email);
+            logger.info("gettgin item");
+            logger.info("item= "+item);
+
 //            if(userEmailsTable == null) {
 //                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
 //                return null;
 //            }
 
-            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-            DynamoDB dynamoDb = new DynamoDB(client);
-            Table table = dynamoDb.getTable("UsernameTokenTable");
-            GetItemRequest request = null;
-            HashMap<String, AttributeValue> key_to_get =
-                    new HashMap<String,AttributeValue>();
-
-            logger.info("hiiiiiiiiiiii");
-            key_to_get.put("emailID", new AttributeValue(email));
-            request = new GetItemRequest()
-                    .withKey(key_to_get)
-                    .withTableName("UsernameTokenTable");
-            final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
-            Map<String,AttributeValue> returned_item =
-                    ddb.getItem(request).getItem();
-
-            Set<String> keys = returned_item.keySet();
-            for (String key : keys) {
-                logger.info(key, returned_item.get(key));
-            }
+//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+//            DynamoDB dynamoDb = new DynamoDB(client);
+//            Table table = dynamoDb.getTable("UsernameTokenTable");
+//            GetItemRequest request = null;
+//            HashMap<String, AttributeValue> key_to_get =
+//                    new HashMap<String,AttributeValue>();
+//
+//            logger.info("hiiiiiiiiiiii");
+//            key_to_get.put("emailID", new AttributeValue(email));
+//            request = new GetItemRequest()
+//                    .withKey(key_to_get)
+//                    .withTableName("UsernameTokenTable");
+//            final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
+//            Map<String,AttributeValue> returned_item =
+//                    ddb.getItem(request).getItem();
+//
+//            Set<String> keys = returned_item.keySet();
+//            for (String key : keys) {
+//                logger.info(key, returned_item.get(key));
+//            }
             //            Item item = new Item()
 //                    .withPrimaryKey("emailID", email);
 //            PutItemOutcome outcome = table.getItem(item);

@@ -1,18 +1,40 @@
 package com.springboot.springbootapp.controller;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.Instant;
 
+
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.GetItemOutcome;
+
+import com.amazonaws.services.dynamodbv2.document.internal.InternalUtils;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
+import com.amazonaws.services.dynamodbv2.model.PutItemResult;
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.springboot.springbootapp.entity.Image;
 import com.springboot.springbootapp.entity.User;
 
 import com.springboot.springbootapp.repository.ImageRepository;
+import com.springboot.springbootapp.service.EmailSNSService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.springboot.springbootapp.errors.RegistrationStatus;
 import com.springboot.springbootapp.repository.UserRepository;
 import com.springboot.springbootapp.service.S3BucketStorageService;
 import com.springboot.springbootapp.service.UserService;
 import com.springboot.springbootapp.validators.UserValidator;
-import java.util.Base64;
-import java.util.Optional;
+
+import java.time.OffsetDateTime;
+import java.util.*;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +44,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
 import com.timgroup.statsd.StatsDClient;
 
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +56,10 @@ import javax.validation.Valid;
 
 
 @RestController
+
 public class UserController {
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
@@ -53,10 +78,16 @@ public class UserController {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     @Autowired
     ImageRepository imageRepository;
 
+    private DynamoDB dynamoDB;
 
+    @Autowired
+    EmailSNSService snsService;
+
+    static AmazonDynamoDB dynamodbClient = null;
 
     @InitBinder
     private void initBinder(WebDataBinder binder) {
@@ -74,6 +105,10 @@ public class UserController {
         String[] parts = decoded.split(":");
         if (userService.isEmailPresent(parts[0])){
             User user = userService.getUser(parts[0]);
+            if(!user.isVerified()) {
+                System.out.println("User is not yet verified");
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
     }
 
@@ -104,6 +139,10 @@ public class UserController {
         if ((user.getEmailId() != null) || (user.getPassword().equals("") || (user.getFname().equals("")) || (user.getLname().equals("")))){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(" 400 Bad Request");
         } else {
+            if(!user.isVerified()) {
+                System.out.println("User is not yet verified");
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             User updated_user = userService.updateUser(user);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(updated_user);
         }
@@ -120,6 +159,10 @@ public class UserController {
         }else {
             registrationStatus = new RegistrationStatus();
             userService.register(user);
+            //create entry in dynamodb to trigger lambda by sns
+            System.out.println("in sns");
+            snsService.postToTopic(user.getEmailId(),"POST");
+
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
     }
@@ -131,6 +174,108 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("200 OK");
     }
 
+    @GetMapping("v1/verifyUserEmail")
+    public ResponseEntity<String> verifedUserUpdate(@RequestParam("email") String email,
+                                                    @RequestParam("token") String token) {
+        String result ="not verfied get";
+//        try {
+            System.out.println("in post");
+            //check if token is still valid in EmailID_Data
+
+            // confirm dynamoDB table exists
+
+            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+            DynamoDB dynamoDB = new DynamoDB(client);
+            logger.info("email is"+email);
+
+            Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
+            GetItemSpec spec = new GetItemSpec()
+                    .withPrimaryKey("emailID", email)
+
+                  ;
+            Item item1 = userEmailsTable.getItem(spec);
+            logger.info("first");
+            logger.info(item1.get("emailID").toString());
+
+            Item item = userEmailsTable.getItem("emailID",email);
+            logger.info(item1.get("emailID").toString());
+
+            logger.info("here is issisnipwjdijw");
+          //  Item item = userEmailsTable.getItem(spec);
+            String mail = item.get("emailID").toString();
+            logger.info("email is"+mail);
+            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+            logger.info("tokentime: "+toktime);
+
+//            lo:q!gger.info(item.get("Token").toString());
+
+        logger.info("here is ff");
+
+
+            if(userEmailsTable == null) {
+                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
+                return null;
+            }
+
+            updateFields( email,  token);
+            result ="verified success get";
+
+
+            logger.info("here......");
+
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
+    @PostMapping("v1/verifyUserEmail")
+    public ResponseEntity<String> verifedUserUpdatePost(@RequestParam("email") String email,
+                                                        @RequestParam("token") String token) {
+        String result ="not verfied post";
+        try {
+            //System.out.println("in post");
+            //check if token is still valid
+
+            System.out.println("In post");
+            result ="verified success post";
+            updateFields( email,  token);
+
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    public void updateFields(String email, String token) {
+        System.out.println("Email is: "+email);
+        System.out.println("tokenis: "+token);
+        logger.info("Now tokenis is"+token);
+
+        //check if email has space
+        if(email.indexOf(' ', 0)!=-1) {
+            email.replace(' ', '+');
+        }
+
+        System.out.println("Now Email is: "+email);
+        logger.info("Now Email is"+email);
+
+//        Optional<User> tutorialData = Optional.ofNullable(repository.findByEmailId(email));
+        User user = repository.findByEmailId(email);
+        logger.info("user found"+user.getFname());
+
+//        if (tutorialData.isPresent()) {
+
+          //  User user = tutorialData.get();
+        user.setVerified(true);
+        user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
+        user.setAccUpdateTimestamp(Timestamp.from(Instant.now()));
+        repository.save(user);
+        logger.info("user fields save success");
+
+   }
     //post image
     @PostMapping(value = "/user/self/pic")
     public ResponseEntity<Image> createImage(@RequestParam(value="profilePic", required=true) MultipartFile profilePic, HttpServletRequest request)
@@ -176,6 +321,10 @@ public class UserController {
 
             if (bCryptPasswordEncoder.matches(password, tutorialData.get().getPassword())) {
                 //matches password complete-- add code here
+                if(!tutorialData.get().isVerified()) {
+                    System.out.println("User is not yet verified");
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
 
                 //check if already image i.e. update request
               //  statsd.increment("Calls - find image by user id");
@@ -260,7 +409,10 @@ public class UserController {
 
                 //check if verified user
                 //matches password complete-- add code here
-
+                if(!tutorialData.get().isVerified()) {
+                    System.out.println("User is not yet verified");
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
                 User user = tutorialData.get();
 
                 long startTime2 = System.currentTimeMillis();
@@ -324,7 +476,10 @@ public class UserController {
 
 
                 //check if verified user
-
+                if(!tutorialData.get().isVerified()) {
+                    System.out.println("User is not yet verified");
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
 
 
                 //matches password complete-- add code here

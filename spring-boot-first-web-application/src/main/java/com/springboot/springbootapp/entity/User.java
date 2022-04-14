@@ -24,6 +24,8 @@ public class User {
 	private String password;
 	private Timestamp account_created;
 	private Timestamp account_updated;
+	private boolean verified;
+	private String verified_on;
 	public void setAccTimestamp(Timestamp date) {
 		this.account_created = date;
 	}
@@ -37,4 +39,7 @@ public class User {
 		this.lname = lname;
 		this.emailId = emailId;
 		this.password = password;
-}}
+		this.verified = false;
+		this.verified_on = "";
+}
+}

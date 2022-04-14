@@ -192,59 +192,25 @@ public class UserController {
             Item item = userEmailsTable.getItem(spec);
             String mail = item.get("emailID").toString();
             logger.info(mail);
-//            logger.info(item.get("Token").toString());
-//            logger.info(item.get("TimeToLive").toString());
+            logger.info(item.get("Token").toString());
+            logger.info(item.get("TimeToLive").toString());
+
+        logger.info("here is ff");
 
 
+            if(userEmailsTable == null) {
+                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
+                return null;
+            }
 
-//            if(userEmailsTable == null) {
-//                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
-//                return null;
-//            }
-
-//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-//            DynamoDB dynamoDb = new DynamoDB(client);
-//            Table table = dynamoDb.getTable("UsernameTokenTable");
-//            GetItemRequest request = null;
-//            HashMap<String, AttributeValue> key_to_get =
-//                    new HashMap<String,AttributeValue>();
-//
-//            logger.info("hiiiiiiiiiiii");
-//            key_to_get.put("emailID", new AttributeValue(email));
-//            request = new GetItemRequest()
-//                    .withKey(key_to_get)
-//                    .withTableName("UsernameTokenTable");
-//            final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
-//            Map<String,AttributeValue> returned_item =
-//                    ddb.getItem(request).getItem();
-//
-//            Set<String> keys = returned_item.keySet();
-//            for (String key : keys) {
-//                logger.info(key, returned_item.get(key));
-//            }
-            //            Item item = new Item()
-//                    .withPrimaryKey("emailID", email);
-//            PutItemOutcome outcome = table.getItem(item);
-
-//            }
-//
-//            logger.info("EmailD after replacement is:"+email);
-//            //check if item exits
-//            logger.info("here..");
 //            updateFields( email,  token);
             result ="verified success get";
 
 
             logger.info("here......");
 
-//
-//        }
-//        catch(Exception e)
-//        {
-//            System.out.println(e);
-//        }
 
-        return new ResponseEntity<>(mail, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 

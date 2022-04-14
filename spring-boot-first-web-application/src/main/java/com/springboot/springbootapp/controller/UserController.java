@@ -188,10 +188,12 @@ public class UserController {
                     .withPrimaryKey("emailID", email)
                   ;
 
+            logger.info("here is issisnipwjdijw");
             Item item = userEmailsTable.getItem(spec);
-            logger.info(item.get("emailID").toString());
-            logger.info(item.get("Token").toString());
-            logger.info(item.get("TimeToLive").toString());
+            String mail = item.get("emailID").toString();
+            logger.info(mail);
+//            logger.info(item.get("Token").toString());
+//            logger.info(item.get("TimeToLive").toString());
 
 
 

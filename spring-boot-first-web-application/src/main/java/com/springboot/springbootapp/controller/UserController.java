@@ -200,6 +200,8 @@ public class UserController {
           //  Item item = userEmailsTable.getItem(spec);
             String mail = item.get("emailID").toString();
             logger.info("email is"+mail);
+            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+            logger.info("tokentime: "+toktime);
 
 //            lo:q!gger.info(item.get("Token").toString());
 

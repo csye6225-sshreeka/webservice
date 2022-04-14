@@ -278,9 +278,11 @@ public class UserController {
         logger.info("Now Email is"+email);
 
         Optional<User> tutorialData = Optional.ofNullable(repository.findByEmailId(email));
-        if (tutorialData.isPresent()) {
+        User user = repository.findByEmailId(email);
 
-            User user = tutorialData.get();
+//        if (tutorialData.isPresent()) {
+
+          //  User user = tutorialData.get();
             user.setVerified(true);
             user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
             user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
@@ -288,12 +290,12 @@ public class UserController {
             System.out.println("user fields save success");
             logger.info("user fields save success");
 
-        }
-        else {
-            System.out.println("error update verify user fields");
-        }
-
-        System.out.println("updated user verify fields");
+//        }
+//        else {
+//            System.out.println("error update verify user fields");
+//        }
+//
+//        System.out.println("updated user verify fields");
     }
 
     //post image

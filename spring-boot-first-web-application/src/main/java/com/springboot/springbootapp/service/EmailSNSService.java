@@ -80,6 +80,7 @@ public class EmailSNSService {
                     .withPrimaryKey("emailID", recipientEmail)
                     .with("Token",randomInt)
                     .with("TimeToLive",add5Min());
+           // client.updateTimeToLive(add5Min());
             PutItemOutcome outcome = table.putItem(item);
         } catch (SnsException e) {
             System.out.println("sns exception: " + e.getMessage());

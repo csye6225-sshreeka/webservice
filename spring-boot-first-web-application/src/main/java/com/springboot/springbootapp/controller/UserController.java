@@ -195,16 +195,18 @@ public class UserController {
                   ;
             Item item1 = userEmailsTable.getItem(spec);
             logger.info("first");
-            logger.info(item1.get("emailID").toString());
+           // logger.info(item1.get("emailID").toString());
 
-            Item item = userEmailsTable.getItem("emailID",email);
+          //  Item item = userEmailsTable.getItem("emailID",email);
             logger.info(item1.get("emailID").toString());
+            //Item _item = userEmailsTable.getItem("Token",token);
 
             logger.info("here is issisnipwjdijw");
           //  Item item = userEmailsTable.getItem(spec);
-            String mail = item.get("emailID").toString();
-            logger.info("email is"+mail);
-            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+//            String mail = item.get("emailID").toString();
+//            logger.debug(_item.get("Token").toString());
+//            logger.info("email is"+mail);
+            BigDecimal toktime=(BigDecimal)item1.get("TimeToLive");
             logger.info("tokentime: "+toktime);
 
 //            lo:q!gger.info(item.get("Token").toString());
@@ -266,9 +268,6 @@ public class UserController {
         User user = repository.findByEmailId(email);
         logger.info("user found"+user.getFname());
 
-//        if (tutorialData.isPresent()) {
-
-          //  User user = tutorialData.get();
         user.setVerified(true);
         user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
         user.setAccUpdateTimestamp(Timestamp.from(Instant.now()));

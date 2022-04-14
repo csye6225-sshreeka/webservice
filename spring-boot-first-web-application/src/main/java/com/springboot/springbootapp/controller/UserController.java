@@ -149,7 +149,7 @@ public class UserController {
             userService.register(user);
             //create entry in dynamodb to trigger lambda by sns
             System.out.println("in sns");
-            snsService.postToTopic("POST", user.getEmailId());
+            snsService.postToTopic(user.getEmailId(),"POST");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }

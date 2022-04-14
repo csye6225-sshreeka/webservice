@@ -189,8 +189,11 @@ public class UserController {
                     .withPrimaryKey("emailID", email)
                   ;
 
+            Item item = userEmailsTable.getItem("emailID",email);
+
+
             logger.info("here is issisnipwjdijw");
-            Item item = userEmailsTable.getItem(spec);
+          //  Item item = userEmailsTable.getItem(spec);
             String mail = item.get("emailID").toString();
             logger.info(mail);
             logger.info(item.get("Token").toString());

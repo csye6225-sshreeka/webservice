@@ -197,6 +197,7 @@ public class UserController {
             System.out.println("EmailD after replacement is:"+email);
             //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
+            logger.info("here");
 
             logger.info("item= "+item);
             if (item == null ) {
@@ -212,9 +213,9 @@ public class UserController {
                 //calcuate now time
                 long now = Instant.now().getEpochSecond(); // unix time
                 long timereminsa =  now - toktime.longValue(); // 2 mins in sec
-                System.out.println("tokentime: "+toktime);
-                System.out.println("now: "+now);
-                System.out.println("remins: "+timereminsa);
+                logger.info("tokentime: "+toktime);
+                logger.info("now: "+now);
+                logger.info("remins: "+timereminsa);
 
 
                 //ttl=(ttl + now); // when object will be expired
@@ -287,12 +288,12 @@ public class UserController {
 //        if (tutorialData.isPresent()) {
 
           //  User user = tutorialData.get();
-            user.setVerified(true);
-            user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
-            user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
-            repository.save(user);
-            System.out.println("user fields save success");
-            logger.info("user fields save success");
+        user.setVerified(true);
+        logger.info("j"+user.isVerified());
+        user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
+        user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
+        repository.save(user);
+        logger.info("user fields save success");
 
 //        }
 //        else {

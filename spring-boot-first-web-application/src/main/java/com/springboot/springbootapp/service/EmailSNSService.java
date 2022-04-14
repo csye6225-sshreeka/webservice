@@ -78,6 +78,7 @@ public class EmailSNSService {
 //
             long now = Instant.now().getEpochSecond(); // unix time
             long ttl = 300; // 24 hours in sec
+
             Item item = new Item()
                     .withPrimaryKey("emailID", recipientEmail)
                     .with("Token",randomInt)

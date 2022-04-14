@@ -191,10 +191,10 @@ public class UserController {
             logger.info(email);
 
             System.out.println("Index of spcae: in meial is: "+email.indexOf(" ",0));
-            if(email.indexOf(" ", 0)!=-1) {
-                email=email.replace(" ", "+");
-            }
-            System.out.println("EmailD after replacement is:"+email);
+//            if(email.indexOf(" ", 0)!=-1) {
+//                email=email.replace(" ", "+");
+//            }
+            logger.info("EmailD after replacement is:"+email);
             //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("here");

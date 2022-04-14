@@ -174,7 +174,7 @@ public class UserController {
     public ResponseEntity<String> verifedUserUpdate(@RequestParam("email") String email,
                                                     @RequestParam("token") String token) {
         String result ="not verfied get";
-        try {
+//        try {
             System.out.println("in post");
             //check if token is still valid in EmailID_Data
 
@@ -237,14 +237,14 @@ public class UserController {
 
             logger.info("here......");
 
+//
+//        }
+//        catch(Exception e)
+//        {
+//            System.out.println(e);
+//        }
 
-        }
-        catch(Exception e)
-        {
-            System.out.println(e);
-        }
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(mail, HttpStatus.OK);
     }
 
 

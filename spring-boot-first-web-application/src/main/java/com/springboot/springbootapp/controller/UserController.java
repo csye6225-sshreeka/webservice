@@ -275,13 +275,7 @@ public class UserController {
         repository.save(user);
         logger.info("user fields save success");
 
-//        }
-//        else {
-//            System.out.println("error update verify user fields");
-//        }
-//
-//        System.out.println("updated user verify fields");
-    }
+   }
 
     //post image
     @PostMapping(value = "/user/self/pic")

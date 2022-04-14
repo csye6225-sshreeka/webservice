@@ -9,8 +9,10 @@ import java.time.Instant;
 import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.GetItemOutcome;
+
+import com.amazonaws.services.dynamodbv2.document.internal.InternalUtils;
 import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
@@ -42,8 +44,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
 import com.timgroup.statsd.StatsDClient;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -180,13 +180,13 @@ public class UserController {
 
             // confirm dynamoDB table exists
 
-//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-//            dynamoDB = new DynamoDB(client);
+            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+            dynamoDB = new DynamoDB(client);
 
-//            Table userEmailsTable = dynamoDB.getTable("TokenTable");
-//            Item item = userEmailsTable.getItem("emailID",email);
-//            logger.info("gettgin item");
-//            logger.info("item= "+item);
+            Table userEmailsTable = dynamoDB.getTable("TokenTable");
+            GetItemOutcome outcome = userEmailsTable.getItemOutcome("emailID", email);
+            logger.info(outcome.getItem().toJSON());
+
 
 //            if(userEmailsTable == null) {
 //                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
@@ -217,74 +217,18 @@ public class UserController {
 //                    .withPrimaryKey("emailID", email);
 //            PutItemOutcome outcome = table.getItem(item);
 
-            logger.info("in Get");
-            logger.info("EmailD_Data exits table");
-            logger.info("EmailD in input is:"+email);
-            logger.info(email);
-
-            logger.info("Index of spcae: in meial is: "+email.indexOf(" ",0));
-//            if(email.indexOf(" ", 0)!=-1) {
-//                email=email.replace(" ", "+");
 //            }
-            logger.info("EmailD after replacement is:"+email);
-            //check if item exits
-            logger.info("here..");
-            updateFields( email,  token);
-
-//            dynamodbClient = AmazonDynamoDBClientBuilder.standard()
-//                    .withCredentials(new InstanceProfileCredentialsProvider(false))
-//                    .withRegion("us-east-1")
-//                    .build();
-//            Map<String,String> searchKey = new HashMap<>();
-//            // Search by username & token
-//            searchKey.put("emailID", email);
-//            searchKey.put("token", token);
 //
-//            dynamodbClient.getItem("last",searchKey);
-//            GetItemSpec spec = new GetItemSpec()
-//                    .withPrimaryKey("emailID", email);
-//            Item item = userEmailsTable.getItem(spec);
-//            logger.info(item.toJSONPretty());
-            //Item item = userEmailsTable.getItem("emailID",email);
+//            logger.info("EmailD after replacement is:"+email);
+//            //check if item exits
+//            logger.info("here..");
+//            updateFields( email,  token);
+            result ="verified success get";
+
 
             logger.info("here......");
 
-        //    logger.info("item= "+item);
-//            if (item == null ) {
-//
-//                result="token expired item not present";
-//            }else {
-//                //if token expired
-//                BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
-//
-//
-//                //calcuate now time
-//                long now = Instant.now().getEpochSecond(); // unix time
-//                long timereminsa =  now - toktime.longValue(); // 2 mins in sec
-//                logger.info("tokentime: "+toktime);
-//                logger.info("now: "+now);
-//                logger.info("remins: "+timereminsa);
-//
-//
-//                //ttl=(ttl + now); // when object will be expired
-//                if(timereminsa > 0)
-//                {
-//                    //expired
-//                    result="token expired";
-//                }
-//
-//
-//                //esle update
-//                else {
-//                    System.out.println("In get");
-//                    logger.info("in get");
-//                    result ="verified success get";
-//                    //get user and update feilds
-//
-//                    updateFields( email,  token);
-//                }
-//
-//            }
+
         }
         catch(Exception e)
         {

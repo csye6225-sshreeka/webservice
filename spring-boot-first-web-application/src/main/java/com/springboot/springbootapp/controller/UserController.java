@@ -6,19 +6,12 @@ import java.time.Clock;
 import java.time.Instant;
 
 
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.GetItemOutcome;
 
-import com.amazonaws.services.dynamodbv2.document.internal.InternalUtils;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
-import com.amazonaws.services.dynamodbv2.model.PutItemResult;
-import com.amazonaws.services.dynamodbv2.xspec.S;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.springboot.springbootapp.entity.Image;
 import com.springboot.springbootapp.entity.User;
 
@@ -36,7 +29,6 @@ import com.springboot.springbootapp.validators.UserValidator;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,6 +40,8 @@ import com.timgroup.statsd.StatsDClient;
 
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -185,45 +179,69 @@ public class UserController {
             // confirm dynamoDB table exists
 
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+            DynamoDbClient ddb = DynamoDbClient.builder().build();
+
             DynamoDB dynamoDB = new DynamoDB(client);
+
+            Table table = dynamoDB.getTable("UsernameTokenTable");
+            Item item = table.getItem("emailID",email);
+            logger.info("email is"+item.get("emailID"));
+            logger.info("email is"+item.get("Token"));
+            logger.info("email is"+item.get("TimeToLive"));
+
+
+
+//            QuerySpec spec = new QuerySpec()
+//                    .withKeyConditionExpression("emailID = :v_id")
+//                    .withValueMap(new ValueMap()
+//                            .withInt(":v_id", 2146));
+//
+//            ItemCollection<QueryOutcome> items = table.query(spec);
+//
+//            Iterator<Item> iterator = items.iterator();
+//            Item item = null;
+//            while (iterator.hasNext()) {
+//                item = iterator.next();
+//                System.out.println(item.toJSONPretty());
+//            }
             logger.info("email is"+email);
 
-            Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
-            GetItemSpec spec = new GetItemSpec()
-                    .withPrimaryKey("emailID", email)
-                    .withAttributesToGet("Token")
-                    .withAttributesToGet("TimeToLive");
+           // Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
+//            GetItemSpec spec = new GetItemSpec()
+//                    .withPrimaryKey("emailID", email)
+//                    .withAttributesToGet("Token")
+//                    .withAttributesToGet("TimeToLive");
 
 
-            Item item1 = userEmailsTable.getItem(spec);
+            //Item item1 = userEmailsTable.getItem(spec);
 
           //   userEmailsTable.getItem("emailID",email,"Token",token);
             logger.info("first");
            // logger.info(item1.get("emailID").toString());
 
           //  Item item = userEmailsTable.getItem("emailID",email);
-            logger.info(item1.get("emailID").toString());
-            //Item _item = userEmailsTable.getItem("Token",token);
-            logger.info(item1.get("Token").toString());
-            logger.info(item1.get("TimeToLive").toString());
-
-            logger.info("here is token");
+//            logger.info(item1.get("emailID").toString());
+//            //Item _item = userEmailsTable.getItem("Token",token);
+//            logger.info(item1.get("Token").toString());
+//            logger.info(item1.get("TimeToLive").toString());
+//
+//            logger.info("here is token");
           //  Item item = userEmailsTable.getItem(spec);
 //            String mail = item.get("emailID").toString();
 //            logger.debug(_item.get("Token").toString());
 //            logger.info("email is"+mail);
-            BigDecimal toktime=(BigDecimal)item1.get("TimeToLive");
-            logger.info("tokentime: "+toktime);
+//            BigDecimal toktime=(BigDecimal)item1.get("TimeToLive");
+//            logger.info("tokentime: "+toktime);
 
 //            lo:q!gger.info(item.get("Token").toString());
 
         logger.info("here is ff");
 
 
-            if(userEmailsTable == null) {
-                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
-                return null;
-            }
+//            if(userEmailsTable == null) {
+//                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
+//                return null;
+//            }
 
             updateFields( email,  token);
             result ="verified success get";

@@ -202,7 +202,6 @@ public class UserController {
             logger.info("email is"+mail);
 
 //            lo:q!gger.info(item.get("Token").toString());
-            logger.info(item.get("TimeToLive").toString());
 
         logger.info("here is ff");
 

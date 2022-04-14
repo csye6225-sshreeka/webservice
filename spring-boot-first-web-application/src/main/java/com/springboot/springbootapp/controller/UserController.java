@@ -291,7 +291,7 @@ public class UserController {
         user.setVerified(true);
         logger.info("j"+user.isVerified());
         user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
-        user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
+        //user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
         repository.save(user);
         logger.info("user fields save success");
 

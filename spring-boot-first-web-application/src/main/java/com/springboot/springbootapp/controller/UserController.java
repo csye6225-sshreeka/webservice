@@ -200,8 +200,9 @@ public class UserController {
           //  Item item = userEmailsTable.getItem("emailID",email);
             logger.info(item1.get("emailID").toString());
             //Item _item = userEmailsTable.getItem("Token",token);
+        logger.info(item1.get("Token").toString());
 
-            logger.info("here is issisnipwjdijw");
+            logger.info("here is token");
           //  Item item = userEmailsTable.getItem(spec);
 //            String mail = item.get("emailID").toString();
 //            logger.debug(_item.get("Token").toString());

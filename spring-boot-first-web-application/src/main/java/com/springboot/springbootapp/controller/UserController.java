@@ -276,7 +276,6 @@ public class UserController {
         logger.info("user fields save success");
 
    }
-
     //post image
     @PostMapping(value = "/user/self/pic")
     public ResponseEntity<Image> createImage(@RequestParam(value="profilePic", required=true) MultipartFile profilePic, HttpServletRequest request)

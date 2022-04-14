@@ -17,6 +17,8 @@ import com.springboot.springbootapp.entity.User;
 
 import com.springboot.springbootapp.repository.ImageRepository;
 import com.springboot.springbootapp.service.EmailSNSService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.springboot.springbootapp.errors.RegistrationStatus;
 import com.springboot.springbootapp.repository.UserRepository;
@@ -52,7 +54,10 @@ import javax.validation.Valid;
 
 
 @RestController
+
 public class UserController {
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
@@ -262,6 +267,7 @@ public class UserController {
     public void updateFields(String email, String token) {
         System.out.println("Email is: "+email);
         System.out.println("tokenis: "+token);
+        logger.info("Now tokenis is"+token);
 
         //check if email has space
         if(email.indexOf(' ', 0)!=-1) {
@@ -269,6 +275,7 @@ public class UserController {
         }
 
         System.out.println("Now Email is: "+email);
+        logger.info("Now Email is"+email);
 
         Optional<User> tutorialData = Optional.ofNullable(repository.findByEmailId(email));
         if (tutorialData.isPresent()) {
@@ -279,6 +286,8 @@ public class UserController {
             user.setAccount_updated(Timestamp.valueOf(OffsetDateTime.now(Clock.systemUTC()).toString()));
             repository.save(user);
             System.out.println("user fields save success");
+            logger.info("user fields save success");
+
         }
         else {
             System.out.println("error update verify user fields");

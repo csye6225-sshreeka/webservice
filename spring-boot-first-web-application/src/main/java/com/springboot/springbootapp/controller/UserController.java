@@ -181,7 +181,8 @@ public class UserController {
             // confirm dynamoDB table exists
 
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-            dynamoDB = new DynamoDB(client);
+            DynamoDB dynamoDB = new DynamoDB(client);
+            logger.info("email is"+email);
 
             Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
             GetItemSpec spec = new GetItemSpec()

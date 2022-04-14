@@ -15,4 +15,4 @@ jwt:
   secret: secretkey123
 
 server:
-  port: 8084
+  port: 8083

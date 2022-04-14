@@ -183,13 +183,16 @@ public class UserController {
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
             dynamoDB = new DynamoDB(client);
 
-            Table userEmailsTable = dynamoDB.getTable("UserNameTable");
+            Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
             GetItemSpec spec = new GetItemSpec()
                     .withPrimaryKey("emailID", email)
                   ;
 
             Item item = userEmailsTable.getItem(spec);
-            logger.info(item.toJSONPretty());
+            logger.info(item.get("emailID").toString());
+            logger.info(item.get("Token").toString());
+            logger.info(item.get("TimeToLive").toString());
+
 
 
 //            if(userEmailsTable == null) {

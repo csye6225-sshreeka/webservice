@@ -245,34 +245,26 @@ public class UserController {
                 return null;
             }
 
-            logger.info("EmailD_Data exits table");
-            logger.info("EmailD in input is:"+email);
-            logger.info("Index of spcae: in meial is: "+email.indexOf(" ",0));
             if(email.indexOf(" ", 0)!=-1) {
                 email=email.replace(" ", "+");
             }
-            logger.info("EmailD after replacement is:"+email);
-            //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("item= "+item);
             if (item == null ) {
-                result="token expired item not present";
+                result="token expired !!!";
             }else {
-                //if token expired
-                BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+                BigDecimal tokentime=(BigDecimal)item.get("TimeToLive");
 
-                //calcuate now time
                 long now = Instant.now().getEpochSecond(); // unix time
-                long timereminsa =  now - toktime.longValue(); // 2 mins in sec
-                logger.info("tokentime: "+toktime);
+                long timereminsa =  now - tokentime.longValue(); // 2 mins in sec
+                logger.info("tokentime: "+tokentime);
                 logger.info("now: "+now);
                 logger.info("remins: "+timereminsa);
                 if(timereminsa > 0)
-                {result="token expired";
+                {result="token has expired";
                 }
                 else {
-                    logger.info("In get");
-                    result ="verified success get";
+                    result ="verified successfully!!!";
                     updateFields( email,  token);
                 }
 
@@ -286,47 +278,20 @@ public class UserController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PostMapping("v1/verifyUserEmail")
-    public ResponseEntity<String> verifedUserUpdatePost(@RequestParam("email") String email,
-                                                        @RequestParam("token") String token) {
-        String result ="not verfied post";
-        try {
-            //System.out.println("in post");
-            //check if token is still valid
 
-            System.out.println("In post");
-            result ="verified success post";
-            updateFields( email,  token);
-
-        }
-        catch(Exception e)
-        {
-            System.out.println(e);
-        }
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
 
     public void updateFields(String email, String token) {
-        System.out.println("Email is: "+email);
-        System.out.println("tokenis: "+token);
-        logger.info("Now tokenis is"+token);
 
         //check if email has space
         if(email.indexOf(' ', 0)!=-1) {
             email.replace(' ', '+');
         }
-
-        System.out.println("Now Email is: "+email);
         logger.info("Now Email is"+email);
 
 //        Optional<User> tutorialData = Optional.ofNullable(repository.findByEmailId(email));
         User user = repository.findByEmailId(email);
         logger.info("user found"+user.getFname());
 
-//        if (tutorialData.isPresent()) {
-
-          //  User user = tutorialData.get();
         user.setVerified(true);
         user.setVerified_on( OffsetDateTime.now(Clock.systemUTC()).toString());
         user.setAccUpdateTimestamp(Timestamp.from(Instant.now()));

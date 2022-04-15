@@ -227,7 +227,7 @@ public class UserController {
 //        return new ResponseEntity<>(result, HttpStatus.OK);
 //    }
 
-    @GetMapping("/verifyUserEmail")
+    @GetMapping("v1/verifyUserEmail")
     public ResponseEntity<String> verifedUserUpdate(@RequestParam("email") String email,
                                                     @RequestParam("token") String token) {
         String result ="not verfied get";
@@ -256,10 +256,6 @@ public class UserController {
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("item= "+item);
             if (item == null ) {
-                //table.putItem(new
-
-
-
                 result="token expired item not present";
             }else {
                 //if token expired
@@ -269,9 +265,9 @@ public class UserController {
                 //calcuate now time
                 long now = Instant.now().getEpochSecond(); // unix time
                 long timereminsa =  now - toktime.longValue(); // 2 mins in sec
-                System.out.println("tokentime: "+toktime);
-                System.out.println("now: "+now);
-                System.out.println("remins: "+timereminsa);
+                logger.info("tokentime: "+toktime);
+                logger.info("now: "+now);
+                logger.info("remins: "+timereminsa);
 
 
                 //ttl=(ttl + now); // when object will be expired

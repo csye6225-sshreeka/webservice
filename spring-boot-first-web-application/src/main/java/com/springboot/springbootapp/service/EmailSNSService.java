@@ -69,18 +69,18 @@ public class EmailSNSService {
             System.out.println("Message " + result.messageId() + "is successfully published to SNS Topic 'Notification_Email'");
             logger.info("Message " + result.messageId() + " is successfully published to SNS Topic 'Notification_Email'.");
             logger.info(snsMessage);
-            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-            DynamoDB dynamoDb = new DynamoDB(client);
-            Table table = dynamoDb.getTable("UsernameTokenTable");
+//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+//            DynamoDB dynamoDb = new DynamoDB(client);
+//            Table table = dynamoDb.getTable("UsernameTokenTable");
+////
+//            long now = Instant.now().getEpochSecond(); // unix time
+//            long ttl = 300; // 24 hours in sec
 //
-            long now = Instant.now().getEpochSecond(); // unix time
-            long ttl = 300; // 24 hours in sec
-
-            Item item = new Item()
-                    .withPrimaryKey("emailID", recipientEmail)
-                    .with("Token",randomInt)
-                    .with("TimeToLive",add5Min());
-            PutItemOutcome outcome = table.putItem(item);
+//            Item item = new Item()
+//                    .withPrimaryKey("emailID", recipientEmail)
+//                    .with("Token",randomInt)
+//                    .with("TimeToLive",add5Min());
+//            PutItemOutcome outcome = table.putItem(item);
         } catch (SnsException e) {
             System.out.println("sns exception: " + e.getMessage());
             e.printStackTrace();

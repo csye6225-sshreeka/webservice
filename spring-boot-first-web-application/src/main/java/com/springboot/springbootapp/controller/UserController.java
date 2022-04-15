@@ -241,7 +241,7 @@ public class UserController {
             logger.info("Get /verifyUserEmail");
             Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
             if(userEmailsTable == null) {
-                logger.info("Table 'Emails_DATA' is not in dynamoDB.");
+                logger.info("Table 'UsernameTokenTable' is not in dynamoDB.");
                 return null;
             }
 
@@ -255,48 +255,38 @@ public class UserController {
             //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("item= "+item);
-            if (item == null ) {
-                result="token expired item not present";
-            }else {
-                //if token expired
-                BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
 
+            //calcuate now time
+            long now = Instant.now().getEpochSecond(); // unix time
+            long timereminsa =  now - toktime.longValue(); // 2 mins in sec
+            logger.info("tokentime: "+toktime);
+            logger.info("now: "+now);
+            logger.info("remins: "+timereminsa);
 
-                //calcuate now time
-                long now = Instant.now().getEpochSecond(); // unix time
-                long timereminsa =  now - toktime.longValue(); // 2 mins in sec
-                logger.info("tokentime: "+toktime);
-                logger.info("now: "+now);
-                logger.info("remins: "+timereminsa);
-
-
-                //ttl=(ttl + now); // when object will be expired
-                if(timereminsa > 0)
-                {
-                    //expired
-                    result="token expired";
-                }
-
-
-                //esle update
-                else {
-                    logger.info("In get");
-                    result ="verified success get";
-                    //get user and update feilds
-
-                    updateFields( email,  token);
-                }
-
-            }
-
-
-//		        else {
-//				System.out.println("In get");
-//				result ="verified success get";
-//				//get user and update feilds
+//            if (item == null ) {
+//                result="token expired item not present";
+//            }else {
+//                //if token expired
+////                BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+////
+////
+////                //calcuate now time
+////                long now = Instant.now().getEpochSecond(); // unix time
+////                long timereminsa =  now - toktime.longValue(); // 2 mins in sec
+////                logger.info("tokentime: "+toktime);
+////                logger.info("now: "+now);
+////                logger.info("remins: "+timereminsa);
+////                if(timereminsa > 0)
+////                {result="token expired";
+////                }
+////                else {
+//                    logger.info("In get");
+//                    result ="verified success get";
+//                    updateFields( email,  token);
+//                }
 //
-//				updateFields( email,  token);
-//		        }
+//            }
 
         }
         catch(Exception e)

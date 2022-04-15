@@ -255,17 +255,17 @@ public class UserController {
             //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("item= "+item);
-            logger.info("item= "+item.get("TimeToLive"));
+            logger.info("item= "+item.getJSON("TimeToLive"));
 
-            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
-
-            //calcuate now time
-            long now = Instant.now().getEpochSecond(); // unix time
-            long timereminsa =  now - toktime.longValue(); // 2 mins in sec
-
-            logger.info("tokentime: "+toktime);
-            logger.info("now: "+now);
-            logger.info("remins: "+timereminsa);
+//            BigDecimal toktime=(BigDecimal)item.get(0).get("TimeToLive");
+//
+//            //calcuate now time
+//            long now = Instant.now().getEpochSecond(); // unix time
+//            long timereminsa =  now - toktime.longValue(); // 2 mins in sec
+//
+//            logger.info("tokentime: "+toktime);
+//            logger.info("now: "+now);
+//            logger.info("remins: "+timereminsa);
 
 //            if (item == null ) {
 //                result="token expired item not present";

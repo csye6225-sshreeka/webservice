@@ -255,7 +255,10 @@ public class UserController {
             //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("item= "+item);
-            logger.info("item= "+item.getJSON("TimeToLive"));
+            logger.info("item= "+item.get("Item"));
+            logger.info("item= "+item.get("emailID"));
+            logger.info("bye");
+
 
 //            BigDecimal toktime=(BigDecimal)item.get(0).get("TimeToLive");
 //

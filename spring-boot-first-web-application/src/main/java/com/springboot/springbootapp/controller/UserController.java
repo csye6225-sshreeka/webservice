@@ -255,8 +255,10 @@ public class UserController {
             //check if item exits
             Item item = userEmailsTable.getItem("emailID",email);
             logger.info("item= "+item);
-            logger.info("item= "+item.get("Item"));
+            logger.info("item= "+item.get("TimeToLive"));
             logger.info("item= "+item.get("emailID"));
+            logger.info("item= "+item.get("Token"));
+
             logger.info("bye");
 
 

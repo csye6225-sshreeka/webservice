@@ -174,60 +174,142 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("200 OK");
     }
 
-    @GetMapping("v1/verifyUserEmail")
+//    @GetMapping("v1/verifyUserEmail")
+//    public ResponseEntity<String> verifedUserUpdate(@RequestParam("email") String email,
+//                                                    @RequestParam("token") String token) {
+//        String result ="not verfied get";
+////        try {
+//            System.out.println("in post");
+//            //check if token is still valid in EmailID_Data
+//
+//            // confirm dynamoDB table exists
+//
+//            AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+//            DynamoDB dynamoDB = new DynamoDB(client);
+//            logger.info("email is"+email);
+//
+//            Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
+//            GetItemSpec spec = new GetItemSpec()
+//                    .withPrimaryKey("emailID", email)
+//
+//                  ;
+//            Item item1 = userEmailsTable.getItem(spec);
+//            logger.info("first");
+//            logger.info(item1.get("emailID").toString());
+//
+//            Item item = userEmailsTable.getItem("emailID",email);
+//            logger.info(item1.get("emailID").toString());
+//
+//            logger.info("here is issisnipwjdijw");
+//          //  Item item = userEmailsTable.getItem(spec);
+//            String mail = item.get("emailID").toString();
+//            logger.info("email is"+mail);
+//            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+//            logger.info("tokentime: "+toktime);
+//
+////            lo:q!gger.info(item.get("Token").toString());
+//
+//        logger.info("here is ff");
+//
+//
+//            if(userEmailsTable == null) {
+//                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
+//                return null;
+//            }
+//
+//            updateFields( email,  token);
+//            result ="verified success get";
+//
+//
+//            logger.info("here......");
+//
+//
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
+
+    @GetMapping("/verifyUserEmail")
     public ResponseEntity<String> verifedUserUpdate(@RequestParam("email") String email,
                                                     @RequestParam("token") String token) {
         String result ="not verfied get";
-//        try {
-            System.out.println("in post");
+        try {
+            //System.out.println("in post");
             //check if token is still valid in EmailID_Data
 
             // confirm dynamoDB table exists
-
             AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-            DynamoDB dynamoDB = new DynamoDB(client);
-            logger.info("email is"+email);
-
+            dynamoDB = new DynamoDB(client);
+            logger.info("Get /verifyUserEmail");
             Table userEmailsTable = dynamoDB.getTable("UsernameTokenTable");
-            GetItemSpec spec = new GetItemSpec()
-                    .withPrimaryKey("emailID", email)
-
-                  ;
-            Item item1 = userEmailsTable.getItem(spec);
-            logger.info("first");
-            logger.info(item1.get("emailID").toString());
-
-            Item item = userEmailsTable.getItem("emailID",email);
-            logger.info(item1.get("emailID").toString());
-
-            logger.info("here is issisnipwjdijw");
-          //  Item item = userEmailsTable.getItem(spec);
-            String mail = item.get("emailID").toString();
-            logger.info("email is"+mail);
-            BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
-            logger.info("tokentime: "+toktime);
-
-//            lo:q!gger.info(item.get("Token").toString());
-
-        logger.info("here is ff");
-
-
             if(userEmailsTable == null) {
-                System.out.println("Table 'Emails_DATA' is not in dynamoDB.");
+                logger.info("Table 'Emails_DATA' is not in dynamoDB.");
                 return null;
             }
 
-            updateFields( email,  token);
-            result ="verified success get";
+            logger.info("EmailD_Data exits table");
+            logger.info("EmailD in input is:"+email);
+            logger.info("Index of spcae: in meial is: "+email.indexOf(" ",0));
+            if(email.indexOf(" ", 0)!=-1) {
+                email=email.replace(" ", "+");
+            }
+            logger.info("EmailD after replacement is:"+email);
+            //check if item exits
+            Item item = userEmailsTable.getItem("emailID",email);
+            logger.info("item= "+item);
+            if (item == null ) {
+                //table.putItem(new
 
 
-            logger.info("here......");
 
+                result="token expired item not present";
+            }else {
+                //if token expired
+                BigDecimal toktime=(BigDecimal)item.get("TimeToLive");
+
+
+                //calcuate now time
+                long now = Instant.now().getEpochSecond(); // unix time
+                long timereminsa =  now - toktime.longValue(); // 2 mins in sec
+                System.out.println("tokentime: "+toktime);
+                System.out.println("now: "+now);
+                System.out.println("remins: "+timereminsa);
+
+
+                //ttl=(ttl + now); // when object will be expired
+                if(timereminsa > 0)
+                {
+                    //expired
+                    result="token expired";
+                }
+
+
+                //esle update
+                else {
+                    logger.info("In get");
+                    result ="verified success get";
+                    //get user and update feilds
+
+                    updateFields( email,  token);
+                }
+
+            }
+
+
+//		        else {
+//				System.out.println("In get");
+//				result ="verified success get";
+//				//get user and update feilds
+//
+//				updateFields( email,  token);
+//		        }
+
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
-
     @PostMapping("v1/verifyUserEmail")
     public ResponseEntity<String> verifedUserUpdatePost(@RequestParam("email") String email,
                                                         @RequestParam("token") String token) {

@@ -41,12 +41,12 @@ source "amazon-ebs" "ami-image" {
     owners      = ["amazon"]
     most_recent = true
   }
-  launch_block_device_mappings {
-    device_name           = "/dev/xvda"
-    volume_type           = "gp2"
-    volume_size           = "8"
-    delete_on_termination = true
-  }
+  // launch_block_device_mappings {
+  //   device_name           = "/dev/xvda"
+  //   volume_type           = "gp2"
+  //   volume_size           = "8"
+  //   delete_on_termination = true
+  // }
   region       = "us-east-1"
   access_key   = "${var.aws_access_key}"
   secret_key   = "${var.aws_secret_key}"

@@ -56,4 +56,6 @@ Response:
 {"id":33,"fname":"Piyush","lname":"Kumar","emailId":"Piyush@gmail.com","account_created":"2022-02-16T15:26:55.042+00:00","account_updated":null}%                                             
 d
 
-.
+import certificate cmd
+
+ aws acm import-certificate --certificate fileb://demo_sshreeka_me.crt --certificate-chain fileb://demo_sshreeka_me.ca-bundle  --private-key fileb://pem_file.pem  --profile=demo.
